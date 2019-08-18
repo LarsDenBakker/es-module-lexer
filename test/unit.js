@@ -1,7 +1,7 @@
 import assert from 'assert';
 import analyzeModuleSyntax from '../lexer.js';
 
-function parse (source) {
+function parse(source) {
   const result = analyzeModuleSyntax(source);
   if (result[2])
     throw result[2];
@@ -58,7 +58,7 @@ suite('Lexer', () => {
     assert.equal(d, -1);
     assert.equal(source.slice(s, e), 'test-dep');
 
-    assert.equal(exports.length, 1); 
+    assert.equal(exports.length, 1);
     assert.equal(exports[0], 'default');
   });
 
@@ -97,7 +97,7 @@ suite('Lexer', () => {
         // not a dynamic import!
         import(not1) {}
       });
-      { 
+      {
         // is a dynamic import!
         import(is1);
       }
@@ -131,7 +131,7 @@ suite('Lexer', () => {
       export function f () {
         g();
       }
-      
+
       import { g } from './test-circular2.js';
     `;
     const [imports, exports] = parse(source);
@@ -235,5 +235,13 @@ function x() {
     assert.equal(imports.length, 0);
     assert.equal(exports.length, 1);
     assert.equal(exports[0], 'a');
+  });
+
+  test('Object destructuring in export', () => {
+    const source = `
+      export const { a, b } = foo;
+    `;
+    const [, exports] = parse(source);
+    assert.equal(exports.length, 2);
   });
 });
